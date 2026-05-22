@@ -23,6 +23,4 @@ interface IBridgeTokenV2 {
     function minter() external view returns (address);
 
     function mintCap() external view returns (uint256);
-
-    function outstanding() external view returns (uint256);
 }

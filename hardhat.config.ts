@@ -1,7 +1,8 @@
 import { HardhatUserConfig } from "hardhat/config";
 import * as dotenv from "dotenv";
 import "@nomiclabs/hardhat-etherscan";
-import "@nomiclabs/hardhat-waffle";
+import "@nomiclabs/hardhat-ethers";
+import "@nomicfoundation/hardhat-chai-matchers";
 import 'hardhat-dependency-compiler'
 // import "@nomicfoundation/hardhat-verify";
 import 'hardhat-storage-layout';
