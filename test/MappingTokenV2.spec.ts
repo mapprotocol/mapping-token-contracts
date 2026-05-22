@@ -150,19 +150,24 @@ describe("MappingTokenV2", function () {
             );
         });
 
-        it("reverts when the cap is below current supply", async function () {
+        it("allows lowering the cap below supply; cap 0 is a mint-only freeze", async function () {
             const { token, admin, minter, user } = await deployWithMinter(1000);
             await token.connect(minter).mint(user.address, 600);
-            await expect(token.connect(admin).setMintCap(599))
-                .to.be.revertedWithCustomError(token, "MintCapBelowSupply")
-                .withArgs(599, 600);
-        });
 
-        it("allows the cap to equal current supply", async function () {
-            const { token, admin, minter, user } = await deployWithMinter(1000);
-            await token.connect(minter).mint(user.address, 600);
-            await token.connect(admin).setMintCap(600);
-            expect(await token.mintCap()).to.equal(600);
+            // the cap can be dropped below current supply, down to 0
+            await expect(token.connect(admin).setMintCap(0)).to.emit(token, "UpdateMintCap").withArgs(0);
+            expect(await token.mintCap()).to.equal(0);
+
+            // minting is frozen
+            await expect(token.connect(minter).mint(user.address, 1))
+                .to.be.revertedWithCustomError(token, "MintCapExceeded")
+                .withArgs(601, 0);
+
+            // transfers and burns keep working while minting is frozen
+            await token.connect(user).transfer(minter.address, 100);
+            await token.connect(user).approve(minter.address, 50);
+            await token.connect(minter).burnFrom(user.address, 50);
+            expect(await token.balanceOf(user.address)).to.equal(450);
         });
     });
 

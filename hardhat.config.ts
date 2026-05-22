@@ -65,12 +65,7 @@ const config: HardhatUserConfig = {
       url: `https://1rpc.io/sepolia`,
       chainId : 11155111,
       accounts: process.env.TESTNET_PRIVATE_KEY !== undefined ? [process.env.TESTNET_PRIVATE_KEY] : [],
-    },
-    Holesky: {
-      url: `https://1rpc.io/holesky`,
-      chainId : 17000,
-      accounts: process.env.TESTNET_PRIVATE_KEY !== undefined ? [process.env.TESTNET_PRIVATE_KEY] : [],
-    },
+    }
 
   },
   // sourcify: {

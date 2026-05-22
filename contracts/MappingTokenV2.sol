@@ -12,7 +12,6 @@ contract MappingTokenV2 is ERC20Pausable, ERC20Permit, AccessControlEnumerable, 
     error ZeroAdminAddress();
     error ZeroMinterAddress();
     error MintCapExceeded(uint256 newSupply, uint256 mintCap);
-    error MintCapBelowSupply(uint256 mintCap, uint256 currentSupply);
 
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
 
@@ -62,11 +61,11 @@ contract MappingTokenV2 is ERC20Pausable, ERC20Permit, AccessControlEnumerable, 
         emit UpdateMinter(previousMinter, newMinter);
     }
 
+    // The cap may be set to any value, including 0 or a value below the current
+    // supply. Setting it at or below totalSupply() is a mint-only emergency stop:
+    // mint() then reverts while transfers and burns keep working (unlike pause(),
+    // which freezes every transfer).
     function setMintCap(uint256 cap) external virtual override onlyRole(DEFAULT_ADMIN_ROLE) {
-        uint256 currentSupply = totalSupply();
-        if (cap < currentSupply) {
-            revert MintCapBelowSupply(cap, currentSupply);
-        }
         mintCap = cap;
         emit UpdateMintCap(cap);
     }
