@@ -1,10 +1,8 @@
 import { HardhatUserConfig } from "hardhat/config";
 import * as dotenv from "dotenv";
-import "@nomiclabs/hardhat-etherscan";
+import "@nomicfoundation/hardhat-verify";
 import "@nomiclabs/hardhat-ethers";
 import "@nomicfoundation/hardhat-chai-matchers";
-// import "@nomicfoundation/hardhat-verify";
-import 'hardhat-storage-layout';
 import "solidity-coverage";
 import 'hardhat-deploy';
 require('./tasks');

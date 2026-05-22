@@ -56,10 +56,13 @@ task("revokeTokenV2Role", "revoke MappingTokenV2 role")
 task("mintTokenV2", "mint MappingTokenV2")
     .addParam("token", "token address")
     .addParam("to", "mint address")
-    .addParam("amount", "mint amount")
+    .addParam("amount", "mint amount, in human units (scaled by token decimals)")
     .setAction(async (taskArgs, HardhatRuntimeEnvironment) => {
         const token = await attachToken(HardhatRuntimeEnvironment, "MappingTokenV2", taskArgs.token);
-        await (await token.mint(taskArgs.to, taskArgs.amount)).wait();
+        const decimals = await token.decimals();
+        const amount = HardhatRuntimeEnvironment.ethers.utils.parseUnits(taskArgs.amount, decimals);
+        await (await token.mint(taskArgs.to, amount)).wait();
+        console.log("minted:", taskArgs.amount, "to", taskArgs.to);
     });
 
 task("setMinterV2", "set MappingTokenV2 minter")
