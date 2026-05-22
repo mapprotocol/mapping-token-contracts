@@ -48,21 +48,21 @@ const config: HardhatUserConfig = {
       url: "https://rpc-mainnet.matic.quiknode.pro",
       accounts: process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
-
-    MaticTest: {
-      url: `https://polygon-mumbai.blockpi.network/v1/rpc/public`,
-      chainId : 80001,
+    bsc: {
+      chainId: 56,
+      url: "https://bsc-dataseed.binance.org/",
       accounts: process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
-
+    eth: {
+      chainId: 1,
+      url: "https://mainnet.infura.io/v3/YOUR_INFURA_PROJECT_ID",
+      accounts: process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    },
     Merlin: {
       url: `https://rpc.merlinchain.io`,
       chainId : 4200,
       accounts: process.env.MAINNET_PRIVATE_KEY !== undefined ? [process.env.MAINNET_PRIVATE_KEY] : [],
     },
-
-
-
 
     Bevm: {
       url: `https://rpc-canary-2.bevm.io/`,
@@ -75,7 +75,6 @@ const config: HardhatUserConfig = {
           chainId : 100,
           accounts: process.env.MAINNET_PRIVATE_KEY !== undefined ? [process.env.MAINNET_PRIVATE_KEY] : [],
     },
-
     Sepolia: {
       url: `https://1rpc.io/sepolia`,
       chainId : 11155111,
@@ -103,35 +102,44 @@ const config: HardhatUserConfig = {
     paths: [
       '@openzeppelin/contracts/proxy/transparent/ProxyAdmin.sol',
     ],
+    keep: true,
   },
   etherscan: {
     apiKey: {
-      polygon: "NMW25E1J3FB2TN8SYWN19UXC5FN8T4K7IG",
-      MaticTest: "JT3V5H3AZRFKEBK8W8NGWA7G17AR3IQC2W"
+      polygon: "JT3V5H3AZRFKEBK8W8NGWA7G17AR3IQC2W",
+      bsc: "JT3V5H3AZRFKEBK8W8NGWA7G17AR3IQC2W",
+      eth: "JT3V5H3AZRFKEBK8W8NGWA7G17AR3IQC2W"
     },
     customChains: [
+      {
+        network: "eth",
+        chainId: 1,
+        urls: {
+          apiURL: "https://api.etherscan.io/v2/api?chainid=1",
+          browserURL: "https://etherscan.io"
+        }
+      },
       {
         network: "polygon",
         chainId: 137,
         urls: {
-          apiURL: "https://api.polygonscan.com/api",
-          browserURL: "https://api.polygonscan.com"
+          apiURL: "https://api.etherscan.io/v2/api?chainid=137",
+          browserURL: "https://polygonscan.com"
         }
       },
       {
-        network: "MaticTest",
-        chainId: 80001,
+        network: "bsc",
+        chainId: 56,
         urls: {
-          apiURL: "https://api-testnet.polygonscan.com/api",
-          browserURL: "https://mumbai.polygonscan.com/",
-        },
+          apiURL: "https://api.etherscan.io/v2/api?chainid=56",
+          browserURL: "https://bscscan.com"
+        }
       },
     ]
   }
 };
 
 export default config;
-
 
 
 
