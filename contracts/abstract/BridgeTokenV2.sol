@@ -2,7 +2,6 @@
 pragma solidity 0.8.20;
 
 import { AccessControlEnumerable } from "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
-import { ERC20 } from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import { ERC20Pausable } from "@openzeppelin/contracts/token/ERC20/extensions/ERC20Pausable.sol";
 import { IBridgeTokenV2 } from "../interface/IBridgeTokenV2.sol";
 
@@ -79,7 +78,7 @@ abstract contract BridgeTokenV2 is ERC20Pausable, AccessControlEnumerable, IBrid
         address from,
         address to,
         uint256 amount
-    ) internal virtual override(ERC20, ERC20Pausable) {
+    ) internal virtual override(ERC20Pausable) {
         super._beforeTokenTransfer(from, to, amount);
     }
 }

@@ -115,5 +115,4 @@ artifacts
 
 #hardhat plugin
 abi
-contracts/hardhat-dependency-compiler/
 #deployments
