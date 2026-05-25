@@ -53,7 +53,7 @@ const config: HardhatUserConfig = {
     },
     Eth: {
       chainId: 1,
-      url: "https://mainnet.infura.io/v3/YOUR_INFURA_PROJECT_ID",
+      url: "https://eth-mainnet.public.blastapi.io",
       accounts: process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
     Merlin: {
@@ -77,37 +77,10 @@ const config: HardhatUserConfig = {
   //   browserUrl: "https://repo.sourcify.dev",
   // },
   etherscan: {
-    apiKey: {
-      Polygon: process.env.ETHERSCAN_API_KEY || "",
-      Bsc: process.env.ETHERSCAN_API_KEY || "",
-      Eth: process.env.ETHERSCAN_API_KEY || ""
-    },
-    customChains: [
-      {
-        network: "Eth",
-        chainId: 1,
-        urls: {
-          apiURL: "https://api.etherscan.io/v2/api?chainid=1",
-          browserURL: "https://etherscan.io"
-        }
-      },
-      {
-        network: "Polygon",
-        chainId: 137,
-        urls: {
-          apiURL: "https://api.etherscan.io/v2/api?chainid=137",
-          browserURL: "https://polygonscan.com"
-        }
-      },
-      {
-        network: "Bsc",
-        chainId: 56,
-        urls: {
-          apiURL: "https://api.etherscan.io/v2/api?chainid=56",
-          browserURL: "https://bscscan.com"
-        }
-      },
-    ]
+    // Etherscan V2 multichain API: one key covers all supported chains
+    // (Eth, Polygon, BSC, Arbitrum, Base, Op, ...). hardhat-verify reads
+    // the chainId from each network's config automatically.
+    apiKey: process.env.ETHERSCAN_API_KEY || ""
   },
   abiExporter: {
     path: "./abi",

@@ -16,8 +16,19 @@ task("deployMappingTokenV2", "deploy MappingTokenV2")
     .addParam("symbol", "token symbol")
     .addOptionalParam("decimals", "decimals, default is 18", 18, types.int)
     .addParam("admin", "admin address, should be multisig")
+    .addFlag("verify", "verify the contract on Etherscan after deploy")
     .setAction(async (taskArgs, HardhatRuntimeEnvironment) => {
-        await deployToken(HardhatRuntimeEnvironment, "MappingTokenV2", taskArgs);
+        const addr = await deployToken(HardhatRuntimeEnvironment, "MappingTokenV2", taskArgs);
+        if (taskArgs.verify) {
+            try {
+                await HardhatRuntimeEnvironment.run("verify:verify", {
+                    address: addr,
+                    constructorArguments: [taskArgs.name, taskArgs.symbol, taskArgs.decimals, taskArgs.admin],
+                });
+            } catch (e: any) {
+                console.warn("verify failed:", e.message || e);
+            }
+        }
     });
 
 task("deployMappingTokenV2WithFactory", "deploy MappingTokenV2 with factory")
@@ -31,8 +42,19 @@ task("deployMappingTokenV2WithFactory", "deploy MappingTokenV2 with factory")
         "deploy factory address, default is 0x6258e4d2950757A749a4d4683A7342261ce12471",
         DEFAULT_DEPLOY_FACTORY
     )
+    .addFlag("verify", "verify the contract on Etherscan after deploy")
     .setAction(async (taskArgs, HardhatRuntimeEnvironment) => {
-        await deployTokenWithFactory(HardhatRuntimeEnvironment, "MappingTokenV2", taskArgs);
+        const addr = await deployTokenWithFactory(HardhatRuntimeEnvironment, "MappingTokenV2", taskArgs);
+        if (taskArgs.verify) {
+            try {
+                await HardhatRuntimeEnvironment.run("verify:verify", {
+                    address: addr,
+                    constructorArguments: [taskArgs.name, taskArgs.symbol, taskArgs.decimals, taskArgs.admin],
+                });
+            } catch (e: any) {
+                console.warn("verify failed:", e.message || e);
+            }
+        }
     });
 
 task("grantTokenV2Role", "grant MappingTokenV2 role")
