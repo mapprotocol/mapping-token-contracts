@@ -4,7 +4,7 @@ pragma solidity 0.8.20;
 import { AccessControlEnumerable } from "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
 import { ERC20 } from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import { ERC20Pausable } from "@openzeppelin/contracts/token/ERC20/extensions/ERC20Pausable.sol";
-import { ERC20Permit } from "@openzeppelin/contracts/token/ERC20/extensions/draft-ERC20Permit.sol";
+import { ERC20Permit } from "@openzeppelin/contracts/token/ERC20/extensions/ERC20Permit.sol";
 import { IBridgeTokenV2 } from "./interface/IBridgeTokenV2.sol";
 
 contract MappingTokenV2 is ERC20Pausable, ERC20Permit, AccessControlEnumerable, IBridgeTokenV2 {
