@@ -11,6 +11,7 @@ contract MappingTokenV2 is ERC20Pausable, ERC20Permit, AccessControlEnumerable, 
     error NotMinter(address caller, address currentMinter);
     error ZeroAdminAddress();
     error ZeroMinterAddress();
+    error ZeroAmount();
     error MintCapExceeded(uint256 newSupply, uint256 mintCap);
 
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
@@ -66,8 +67,9 @@ contract MappingTokenV2 is ERC20Pausable, ERC20Permit, AccessControlEnumerable, 
     // mint() then reverts while transfers and burns keep working (unlike pause(),
     // which freezes every transfer).
     function setMintCap(uint256 cap) external virtual override onlyRole(DEFAULT_ADMIN_ROLE) {
+        uint256 previousCap = mintCap;
         mintCap = cap;
-        emit UpdateMintCap(cap);
+        emit UpdateMintCap(previousCap, cap, totalSupply());
     }
 
     function pause() public virtual override onlyRole(PAUSER_ROLE) {
@@ -79,6 +81,7 @@ contract MappingTokenV2 is ERC20Pausable, ERC20Permit, AccessControlEnumerable, 
     }
 
     function mint(address to, uint256 amount) public virtual override onlyMinter {
+        if (amount == 0) revert ZeroAmount();
         uint256 newSupply = totalSupply() + amount;
         if (newSupply > mintCap) {
             revert MintCapExceeded(newSupply, mintCap);
@@ -87,10 +90,12 @@ contract MappingTokenV2 is ERC20Pausable, ERC20Permit, AccessControlEnumerable, 
     }
 
     function burn(uint256 amount) public virtual override onlyMinter {
+        if (amount == 0) revert ZeroAmount();
         _burn(_msgSender(), amount);
     }
 
     function burnFrom(address account, uint256 amount) public virtual override onlyMinter {
+        if (amount == 0) revert ZeroAmount();
         _spendAllowance(account, _msgSender(), amount);
         _burn(account, amount);
     }

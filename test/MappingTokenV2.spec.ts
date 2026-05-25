@@ -139,7 +139,10 @@ describe("MappingTokenV2", function () {
     describe("setMintCap", function () {
         it("lets the admin set the cap and emits UpdateMintCap", async function () {
             const { token, admin } = await deployFixture();
-            await expect(token.connect(admin).setMintCap(5000)).to.emit(token, "UpdateMintCap").withArgs(5000);
+            // fresh fixture: previousCap = 0, currentSupply = 0
+            await expect(token.connect(admin).setMintCap(5000))
+                .to.emit(token, "UpdateMintCap")
+                .withArgs(0, 5000, 0);
             expect(await token.mintCap()).to.equal(5000);
         });
 
@@ -155,7 +158,10 @@ describe("MappingTokenV2", function () {
             await token.connect(minter).mint(user.address, 600);
 
             // the cap can be dropped below current supply, down to 0
-            await expect(token.connect(admin).setMintCap(0)).to.emit(token, "UpdateMintCap").withArgs(0);
+            // event carries (previousCap, newCap, currentSupply) for monitoring
+            await expect(token.connect(admin).setMintCap(0))
+                .to.emit(token, "UpdateMintCap")
+                .withArgs(1000, 0, 600);
             expect(await token.mintCap()).to.equal(0);
 
             // minting is frozen
@@ -278,6 +284,19 @@ describe("MappingTokenV2", function () {
             await expect(token.connect(minter).burnFrom(user.address, 200)).to.be.revertedWith(
                 "ERC20: insufficient allowance"
             );
+        });
+
+        it("rejects zero-amount mint, burn, and burnFrom", async function () {
+            const { token, minter, user } = await deployWithMinter(1000);
+            await token.connect(minter).mint(user.address, 100);
+            await token.connect(user).approve(minter.address, 100);
+
+            await expect(token.connect(minter).mint(user.address, 0))
+                .to.be.revertedWithCustomError(token, "ZeroAmount");
+            await expect(token.connect(minter).burn(0))
+                .to.be.revertedWithCustomError(token, "ZeroAmount");
+            await expect(token.connect(minter).burnFrom(user.address, 0))
+                .to.be.revertedWithCustomError(token, "ZeroAmount");
         });
     });
 
