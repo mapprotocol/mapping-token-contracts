@@ -4,6 +4,7 @@ import "@nomicfoundation/hardhat-verify";
 import "@nomiclabs/hardhat-ethers";
 import "@nomicfoundation/hardhat-chai-matchers";
 import "solidity-coverage";
+import "hardhat-abi-exporter";
 import 'hardhat-deploy';
 require('./tasks');
 
@@ -107,6 +108,13 @@ const config: HardhatUserConfig = {
         }
       },
     ]
+  },
+  abiExporter: {
+    path: "./abi",
+    runOnCompile: true,
+    clear: true,
+    flat: true,
+    only: ["^contracts/"],
   }
 };
 
